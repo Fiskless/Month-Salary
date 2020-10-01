@@ -1,5 +1,6 @@
 import requests
-from datetime import datetime, timedelta, date
+from datetime import datetime, timedelta
+from itertools import count
 
 
 def get_fresh_vacancies_from_moscow(url):
@@ -53,48 +54,48 @@ def average_predict_rub_salary(programming_language):
             predict_salary = 0
     return ((vacancy_index+1), int(sum_salary/(vacancy_index+1)))
 
+def download_all_pages(url):
+    for page in count(0):
+        page_response = requests.get(url, params={'page': page})
+        page_response.raise_for_status()
 
+        page_data = page_response.json()
 
-
-
-
-
-
-
-
-
+        print(page_data)
+        if page >= page_data['pages']:
+            break
 
 if __name__ == '__main__':
 
     # get_fresh_vacancies_from_moscow('https://api.hh.ru/vacancies?text=%D0%BF%D1%80%D0%BE%D0%B3%D1%80%D0%B0%D0%BC%D0%BC%D0%B8%D1%81%D1%82%20Python')
     # #
-    # dictionary_of_vacancies = {
-    #     'Javascript':count_the_number_of_vacancies('Javascript'),
-    #     'Java':count_the_number_of_vacancies('Java'),
-    #     'Python':count_the_number_of_vacancies('Python'),
-    #     'Ruby':count_the_number_of_vacancies('Ruby'),
-    #     'PHP':count_the_number_of_vacancies('PHP'),
-    #     'C++':count_the_number_of_vacancies('C++'),
-    #     'C':count_the_number_of_vacancies('C'),
-    #     'Shell':count_the_number_of_vacancies('Shell')
-    # }
-    # print(dictionary_of_vacancies)
+
 
     # get_salary_from_vacancies('https://api.hh.ru/vacancies?text=%D0%BF%D1%80%D0%BE%D0%B3%D1%80%D0%B0%D0%BC%D0%BC%D0%B8%D1%81%D1%82%20Python')
     #
     # predict_rub_salary('Python')
 
-    average_salary_of_vacancies = {
-        'Javascript':{'vacancies_found':count_the_number_of_vacancies('Javascript'), "vacancies_processed": average_predict_rub_salary('Javascript')[0], "average_salary":average_predict_rub_salary('Javascript')[1]},
-        'Java':{'vacancies_found':count_the_number_of_vacancies('Java'), "vacancies_processed": average_predict_rub_salary('Java')[0], "average_salary":average_predict_rub_salary('Java')[1]},
-        'Python':{'vacancies_found':count_the_number_of_vacancies('Python'), "vacancies_processed": average_predict_rub_salary('Python')[0], "average_salary":average_predict_rub_salary('Python')[1]},
-        'Ruby':{'vacancies_found':count_the_number_of_vacancies('Ruby'), "vacancies_processed": average_predict_rub_salary('Ruby')[0], "average_salary":average_predict_rub_salary('Ruby')[1]},
-        'PHP':{'vacancies_found':count_the_number_of_vacancies('PHP'), "vacancies_processed": average_predict_rub_salary('PHP')[0], "average_salary":average_predict_rub_salary('PHP')[1]},
-        'C++':{'vacancies_found':count_the_number_of_vacancies('C++'), "vacancies_processed": average_predict_rub_salary('C++')[0], "average_salary":average_predict_rub_salary('C++')[1]},
-        'C':{'vacancies_found':count_the_number_of_vacancies('C'), "vacancies_processed": average_predict_rub_salary('C')[0], "average_salary":average_predict_rub_salary('C')[1]},
-        'Shell':{'vacancies_found':count_the_number_of_vacancies('Shell'), "vacancies_processed": average_predict_rub_salary('Shell')[0], "average_salary":average_predict_rub_salary('Shell')[1]}
-    }
-    print(average_salary_of_vacancies)
+    # average_salary_of_vacancies = {
+    #     'Javascript':{'vacancies_found':count_the_number_of_vacancies('Javascript'), "vacancies_processed": average_predict_rub_salary('Javascript')[0], "average_salary":average_predict_rub_salary('Javascript')[1]},
+    #     'Java':{'vacancies_found':count_the_number_of_vacancies('Java'), "vacancies_processed": average_predict_rub_salary('Java')[0], "average_salary":average_predict_rub_salary('Java')[1]},
+    #     'Python':{'vacancies_found':count_the_number_of_vacancies('Python'), "vacancies_processed": average_predict_rub_salary('Python')[0], "average_salary":average_predict_rub_salary('Python')[1]},
+    #     'Ruby':{'vacancies_found':count_the_number_of_vacancies('Ruby'), "vacancies_processed": average_predict_rub_salary('Ruby')[0], "average_salary":average_predict_rub_salary('Ruby')[1]},
+    #     'PHP':{'vacancies_found':count_the_number_of_vacancies('PHP'), "vacancies_processed": average_predict_rub_salary('PHP')[0], "average_salary":average_predict_rub_salary('PHP')[1]},
+    #     'C++':{'vacancies_found':count_the_number_of_vacancies('C++'), "vacancies_processed": average_predict_rub_salary('C++')[0], "average_salary":average_predict_rub_salary('C++')[1]},
+    #     'C':{'vacancies_found':count_the_number_of_vacancies('C'), "vacancies_processed": average_predict_rub_salary('C')[0], "average_salary":average_predict_rub_salary('C')[1]},
+    #     'Shell':{'vacancies_found':count_the_number_of_vacancies('Shell'), "vacancies_processed": average_predict_rub_salary('Shell')[0], "average_salary":average_predict_rub_salary('Shell')[1]}
+    # }
+    # print(average_salary_of_vacancies)
+
+
+    try:
+        data = download_all_pages('https://api.hh.ru/vacancies?text=%D0%9F%D1%80%D0%BE%D0%B3%D1%80%D0%B0%D0%BC%D0%BC%D0%B8%D1%81%D1%82%20Python')
+    except requests.exceptions.HTTPError as error:
+        exit("Can't get data from server:\n{0}".format(error))
+
+
+
+
 
 
 
