@@ -14,14 +14,13 @@ def get_fresh_vacancies_from_moscow(url):
             print(response.json()['items'][vacancy_index])
 
 
+
 def count_the_number_of_vacancies(programming_language):
     url = f'https://api.hh.ru/vacancies?text=%D0%9F%D1%80%D0%BE%D0%B3%D1%80%D0%B0%D0%BC%D0%BC%D0%B8%D1%81%D1%82%20{programming_language}'
     response = requests.get(url)
     response.raise_for_status()
 
-    for vacancy_index, vacancy_json in enumerate (response.json()['items'], start=1):
-        pass
-    return vacancy_index
+    return response.json()['found']
 
 
 def get_salary_from_vacancies(url):
@@ -32,12 +31,12 @@ def get_salary_from_vacancies(url):
     for vacancy_index, vacancy_json in enumerate (response.json()['items']):
         print(vacancy_index, response.json()['items'][vacancy_index]['salary'])
 
-def predict_rub_salary(programming_language):
+def average_predict_rub_salary(programming_language):
 
     url = f'https://api.hh.ru/vacancies?text=%D0%9F%D1%80%D0%BE%D0%B3%D1%80%D0%B0%D0%BC%D0%BC%D0%B8%D1%81%D1%82%20{programming_language}'
     response = requests.get(url)
     response.raise_for_status()
-
+    sum_salary = 0
     for vacancy_index, vacancy_json in enumerate (response.json()['items']):
         try:
             lower_salary = response.json()['items'][vacancy_index]['salary']['from']
@@ -47,9 +46,20 @@ def predict_rub_salary(programming_language):
             elif top_salary == None: predict_salary = lower_salary*1.2
             elif lower_salary == None: predict_salary = top_salary*0.8
             else: predict_salary = (lower_salary+top_salary)/2
-            print(predict_salary)
+            # print(predict_salary)
+            sum_salary = sum_salary + predict_salary
         except TypeError:
-            print(None)
+            # print(None)
+            predict_salary = 0
+    return ((vacancy_index+1), int(sum_salary/(vacancy_index+1)))
+
+
+
+
+
+
+
+
 
 
 
@@ -57,7 +67,7 @@ def predict_rub_salary(programming_language):
 if __name__ == '__main__':
 
     # get_fresh_vacancies_from_moscow('https://api.hh.ru/vacancies?text=%D0%BF%D1%80%D0%BE%D0%B3%D1%80%D0%B0%D0%BC%D0%BC%D0%B8%D1%81%D1%82%20Python')
-    #
+    # #
     # dictionary_of_vacancies = {
     #     'Javascript':count_the_number_of_vacancies('Javascript'),
     #     'Java':count_the_number_of_vacancies('Java'),
@@ -74,15 +84,33 @@ if __name__ == '__main__':
     #
     # predict_rub_salary('Python')
 
+    average_salary_of_vacancies = {
+        'Javascript':{'vacancies_found':count_the_number_of_vacancies('Javascript'), "vacancies_processed": average_predict_rub_salary('Javascript')[0], "average_salary":average_predict_rub_salary('Javascript')[1]},
+        'Java':{'vacancies_found':count_the_number_of_vacancies('Java'), "vacancies_processed": average_predict_rub_salary('Java')[0], "average_salary":average_predict_rub_salary('Java')[1]},
+        'Python':{'vacancies_found':count_the_number_of_vacancies('Python'), "vacancies_processed": average_predict_rub_salary('Python')[0], "average_salary":average_predict_rub_salary('Python')[1]},
+        'Ruby':{'vacancies_found':count_the_number_of_vacancies('Ruby'), "vacancies_processed": average_predict_rub_salary('Ruby')[0], "average_salary":average_predict_rub_salary('Ruby')[1]},
+        'PHP':{'vacancies_found':count_the_number_of_vacancies('PHP'), "vacancies_processed": average_predict_rub_salary('PHP')[0], "average_salary":average_predict_rub_salary('PHP')[1]},
+        'C++':{'vacancies_found':count_the_number_of_vacancies('C++'), "vacancies_processed": average_predict_rub_salary('C++')[0], "average_salary":average_predict_rub_salary('C++')[1]},
+        'C':{'vacancies_found':count_the_number_of_vacancies('C'), "vacancies_processed": average_predict_rub_salary('C')[0], "average_salary":average_predict_rub_salary('C')[1]},
+        'Shell':{'vacancies_found':count_the_number_of_vacancies('Shell'), "vacancies_processed": average_predict_rub_salary('Shell')[0], "average_salary":average_predict_rub_salary('Shell')[1]}
+    }
+    print(average_salary_of_vacancies)
 
 
-    url = f'https://api.hh.ru/vacancies?text=%D0%9F%D1%80%D0%BE%D0%B3%D1%80%D0%B0%D0%BC%D0%BC%D0%B8%D1%81%D1%82%20Python'
-    response = requests.get(url)
-    response.raise_for_status()
 
-    for vacancy_index, vacancy_json in enumerate (response.json()['items']):
-        pass
-    print(vacancy_index)
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
