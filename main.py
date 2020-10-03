@@ -32,27 +32,29 @@ def get_salary_from_vacancies(url):
     for vacancy_index, vacancy_json in enumerate (response.json()['items']):
         print(vacancy_index, response.json()['items'][vacancy_index]['salary'])
 
-def average_predict_rub_salary(programming_language):
+def average_predict_rub_salary_per_page(programming_language, params=None):
 
     url = f'https://api.hh.ru/vacancies?text=%D0%9F%D1%80%D0%BE%D0%B3%D1%80%D0%B0%D0%BC%D0%BC%D0%B8%D1%81%D1%82%20{programming_language}'
-    response = requests.get(url)
+    response = requests.get(url, params=params)
     response.raise_for_status()
     sum_salary = 0
-    for vacancy_index, vacancy_json in enumerate (response.json()['items']):
+    error = 0
+    for vacancy_index, vacancy_json in enumerate(response.json()['items']):
         try:
             lower_salary = response.json()['items'][vacancy_index]['salary']['from']
             top_salary = response.json()['items'][vacancy_index]['salary']['to']
             currency = response.json()['items'][vacancy_index]['salary']['currency']
-            if currency != 'RUR':predict_salary = 'None'
+            if currency != 'RUR': error = error +1
             elif top_salary == None: predict_salary = lower_salary*1.2
             elif lower_salary == None: predict_salary = top_salary*0.8
             else: predict_salary = (lower_salary+top_salary)/2
-            # print(predict_salary)
             sum_salary = sum_salary + predict_salary
         except TypeError:
-            # print(None)
-            predict_salary = 0
-    return ((vacancy_index+1), int(sum_salary/(vacancy_index+1)))
+            error = error + 1
+
+    print(error)
+    vacancy_numbers = vacancy_index + 1 - error
+    return ((vacancy_numbers), int(sum_salary/(vacancy_numbers)))
 
 def download_all_pages(url):
     for page in count(0):
@@ -62,8 +64,10 @@ def download_all_pages(url):
         page_data = page_response.json()
 
         print(page_data)
+        print(page)
         if page >= page_data['pages']:
             break
+
 
 if __name__ == '__main__':
 
@@ -88,10 +92,12 @@ if __name__ == '__main__':
     # print(average_salary_of_vacancies)
 
 
-    try:
-        data = download_all_pages('https://api.hh.ru/vacancies?text=%D0%9F%D1%80%D0%BE%D0%B3%D1%80%D0%B0%D0%BC%D0%BC%D0%B8%D1%81%D1%82%20Python')
-    except requests.exceptions.HTTPError as error:
-        exit("Can't get data from server:\n{0}".format(error))
+    # try:
+    #     data = download_all_pages('https://api.hh.ru/vacancies?text=%D0%9F%D1%80%D0%BE%D0%B3%D1%80%D0%B0%D0%BC%D0%BC%D0%B8%D1%81%D1%82%20Python')
+    # except requests.exceptions.HTTPError as error:
+    #     exit("Can't get data from server:\n{0}".format(error))
+
+    print(average_predict_rub_salary('Python'))
 
 
 
