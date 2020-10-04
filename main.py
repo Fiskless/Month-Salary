@@ -74,6 +74,7 @@ def average_predict_rub_salary(programming_language):
 
     return vacancies_found, vacancies_processed, average_salary_all_pages
 
+
 if __name__ == '__main__':
 
     # get_fresh_vacancies_from_moscow('https://api.hh.ru/vacancies?text=%D0%BF%D1%80%D0%BE%D0%B3%D1%80%D0%B0%D0%BC%D0%BC%D0%B8%D1%81%D1%82%20Python')
@@ -97,31 +98,39 @@ if __name__ == '__main__':
     # }
     # print(average_salary_of_vacancies_per_page)
 
-    try:
-        javascript_1, javascript_2, javascript_3 = average_predict_rub_salary('Javascript')
-        java_1, java_2, java_3 = average_predict_rub_salary('Javascript')
-        python_1, python_2, python_3 = average_predict_rub_salary('Python')
-        ruby_1, ruby_2, ruby_3 = average_predict_rub_salary('Ruby')
-        php_1, php_2,php_3 = average_predict_rub_salary('PHP')
-        c_plus_1, c_plus_2, c_plus_3 = average_predict_rub_salary('C++')
-        c_1, c_2, c_3 = average_predict_rub_salary('C')
-        shell_1, shell_2, shell_3 = average_predict_rub_salary('Shell')
+    # try:
+    #     javascript_1, javascript_2, javascript_3 = average_predict_rub_salary('Javascript')
+    #     java_1, java_2, java_3 = average_predict_rub_salary('Javascript')
+    #     python_1, python_2, python_3 = average_predict_rub_salary('Python')
+    #     ruby_1, ruby_2, ruby_3 = average_predict_rub_salary('Ruby')
+    #     php_1, php_2,php_3 = average_predict_rub_salary('PHP')
+    #     c_plus_1, c_plus_2, c_plus_3 = average_predict_rub_salary('C++')
+    #     c_1, c_2, c_3 = average_predict_rub_salary('C')
+    #     shell_1, shell_2, shell_3 = average_predict_rub_salary('Shell')
+    #
+    #     average_salary_of_vacancies_all_pages = {
+    #         'Javascript':{'vacancies_found':javascript_1, "vacancies_processed": javascript_2, "average_salary":javascript_3},
+    #         'Java':{'vacancies_found':java_1, "vacancies_processed": java_2, "average_salary":java_3},
+    #         'Python':{'vacancies_found':python_1, "vacancies_processed": python_2, "average_salary":python_3},
+    #         'Ruby':{'vacancies_found':ruby_1, "vacancies_processed": ruby_2, "average_salary":ruby_3},
+    #         'PHP':{'vacancies_found':php_1, "vacancies_processed": php_2, "average_salary":php_3},
+    #         'C++':{'vacancies_found':c_plus_1, "vacancies_processed": c_plus_2, "average_salary":c_plus_3},
+    #         'C':{'vacancies_found':c_1, "vacancies_processed": c_2, "average_salary":c_3},
+    #         'Shell':{'vacancies_found':shell_1, "vacancies_processed": shell_2, "average_salary":shell_3}
+    #     }
+    #
+    #     print(average_salary_of_vacancies_all_pages)
+    #
+    # except requests.exceptions.HTTPError as error:
+    #     exit("Can't get data from server:\n{0}".format(error))
 
-        average_salary_of_vacancies_all_pages = {
-            'Javascript':{'vacancies_found':javascript_1, "vacancies_processed": javascript_2, "average_salary":javascript_3},
-            'Java':{'vacancies_found':java_1, "vacancies_processed": java_2, "average_salary":java_3},
-            'Python':{'vacancies_found':python_1, "vacancies_processed": python_2, "average_salary":python_3},
-            'Ruby':{'vacancies_found':ruby_1, "vacancies_processed": ruby_2, "average_salary":ruby_3},
-            'PHP':{'vacancies_found':php_1, "vacancies_processed": php_2, "average_salary":php_3},
-            'C++':{'vacancies_found':c_plus_1, "vacancies_processed": c_plus_2, "average_salary":c_plus_3},
-            'C':{'vacancies_found':c_1, "vacancies_processed": c_2, "average_salary":c_3},
-            'Shell':{'vacancies_found':shell_1, "vacancies_processed": shell_2, "average_salary":shell_3}
-        }
 
-        print(average_salary_of_vacancies_all_pages)
+    url = 'https://api.superjob.ru/2.33/vacancies'
+    headers = {'X-Api-App-Id': 'v3.r.132999182.2aec9940bf8d6a965fbb69eb1e598b4f0b94b599.8c58053773f294ecce467d53ced827eae273857a'}
+    response = requests.post(url, headers=headers)
+    response.raise_for_status()
 
-    except requests.exceptions.HTTPError as error:
-        exit("Can't get data from server:\n{0}".format(error))
+
 
 
 
