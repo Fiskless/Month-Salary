@@ -37,8 +37,7 @@ def average_predict_rub_salary_per_page(programming_language, params=None):
     url = f'https://api.hh.ru/vacancies?text=%D0%9F%D1%80%D0%BE%D0%B3%D1%80%D0%B0%D0%BC%D0%BC%D0%B8%D1%81%D1%82%20{programming_language}'
     response = requests.get(url, params=params)
     response.raise_for_status()
-    sum_salary = 0
-    error = 0
+    sum_salary, error, predict_salary = 0,0,0
     for vacancy_index, vacancy_json in enumerate(response.json()['items']):
         try:
             lower_salary = response.json()['items'][vacancy_index]['salary']['from']
@@ -51,32 +50,36 @@ def average_predict_rub_salary_per_page(programming_language, params=None):
             sum_salary = sum_salary + predict_salary
         except TypeError:
             error = error + 1
-
-    print(error)
+    number_of_pages = response.json()['pages']
     vacancy_numbers = vacancy_index + 1 - error
-    return ((vacancy_numbers), int(sum_salary/(vacancy_numbers)))
+    if vacancy_numbers == 0:
+        average_salary_per_page = 0
+    else:
+        average_salary_per_page = int(sum_salary/(vacancy_numbers))
+    return ((vacancy_numbers), average_salary_per_page, number_of_pages)
 
-def download_all_pages(url):
-    for page in count(0):
-        page_response = requests.get(url, params={'page': page})
-        page_response.raise_for_status()
 
-        page_data = page_response.json()
+def average_predict_rub_salary(programming_language):
 
-        print(page_data)
-        print(page)
-        if page >= page_data['pages']:
+    sum_predict_rub_salary_all_pages = 0
+    for page in count(96):
+        print(average_predict_rub_salary_per_page(programming_language, {'page': page}))
+        sum_predict_rub_salary_all_pages = sum_predict_rub_salary_all_pages + average_predict_rub_salary_per_page(programming_language, {'page': page})[1]
+        print(page, sum_predict_rub_salary_all_pages)
+        if page >= average_predict_rub_salary_per_page(programming_language, {'page': page})[2]:
             break
-
+    average_salary_all_pages = sum_predict_rub_salary_all_pages/(page+1)
+    print(average_salary_all_pages)
 
 if __name__ == '__main__':
 
     # get_fresh_vacancies_from_moscow('https://api.hh.ru/vacancies?text=%D0%BF%D1%80%D0%BE%D0%B3%D1%80%D0%B0%D0%BC%D0%BC%D0%B8%D1%81%D1%82%20Python')
-    # #
-
-
-    # get_salary_from_vacancies('https://api.hh.ru/vacancies?text=%D0%BF%D1%80%D0%BE%D0%B3%D1%80%D0%B0%D0%BC%D0%BC%D0%B8%D1%81%D1%82%20Python')
     #
+    # print(average_predict_rub_salary_per_page('Python'))
+    #
+    #
+    # get_salary_from_vacancies('https://api.hh.ru/vacancies?text=%D0%BF%D1%80%D0%BE%D0%B3%D1%80%D0%B0%D0%BC%D0%BC%D0%B8%D1%81%D1%82%20Python')
+    # #
     # predict_rub_salary('Python')
 
     # average_salary_of_vacancies = {
@@ -92,12 +95,12 @@ if __name__ == '__main__':
     # print(average_salary_of_vacancies)
 
 
-    # try:
-    #     data = download_all_pages('https://api.hh.ru/vacancies?text=%D0%9F%D1%80%D0%BE%D0%B3%D1%80%D0%B0%D0%BC%D0%BC%D0%B8%D1%81%D1%82%20Python')
-    # except requests.exceptions.HTTPError as error:
-    #     exit("Can't get data from server:\n{0}".format(error))
+    try:
+        average_predict_rub_salary('Python')
+    except requests.exceptions.HTTPError as error:
+        exit("Can't get data from server:\n{0}".format(error))
 
-    print(average_predict_rub_salary('Python'))
+
 
 
 
