@@ -1,6 +1,7 @@
 import requests
 from datetime import datetime, timedelta
 from itertools import count
+import os
 from dotenv import load_dotenv
 
 
@@ -79,7 +80,7 @@ def average_predict_rub_salary(programming_language):
 if __name__ == '__main__':
 
     load_dotenv()
-    super_job_secret_key = os.getenv("super_job_secret_key")
+    super_job_secret_key = os.getenv("SUPER_JOB_SECRET_KEY")
 
     # get_fresh_vacancies_from_moscow('https://api.hh.ru/vacancies?text=%D0%BF%D1%80%D0%BE%D0%B3%D1%80%D0%B0%D0%BC%D0%BC%D0%B8%D1%81%D1%82%20Python')
     #
@@ -103,7 +104,7 @@ if __name__ == '__main__':
     # print(average_salary_of_vacancies_per_page)
 
     # try:
-    #     javascript_1, javascript_2, javascript_3 = average_predict_rub_salary('Javascript')
+    #       javascript_1, javascript_2, javascript_3 = average_predict_rub_salary('Javascript')
     #     java_1, java_2, java_3 = average_predict_rub_salary('Javascript')
     #     python_1, python_2, python_3 = average_predict_rub_salary('Python')
     #     ruby_1, ruby_2, ruby_3 = average_predict_rub_salary('Ruby')
@@ -112,8 +113,8 @@ if __name__ == '__main__':
     #     c_1, c_2, c_3 = average_predict_rub_salary('C')
     #     shell_1, shell_2, shell_3 = average_predict_rub_salary('Shell')
     #
-    #     average_salary_of_vacancies_all_pages = {
-    #         'Javascript':{'vacancies_found':javascript_1, "vacancies_processed": javascript_2, "average_salary":javascript_3},
+          # average_salary_of_vacancies_all_pages = {
+          #   'Javascript':{'vacancies_found':javascript_1, "vacancies_processed": javascript_2, "average_salary":javascript_3},
     #         'Java':{'vacancies_found':java_1, "vacancies_processed": java_2, "average_salary":java_3},
     #         'Python':{'vacancies_found':python_1, "vacancies_processed": python_2, "average_salary":python_3},
     #         'Ruby':{'vacancies_found':ruby_1, "vacancies_processed": ruby_2, "average_salary":ruby_3},
@@ -121,18 +122,37 @@ if __name__ == '__main__':
     #         'C++':{'vacancies_found':c_plus_1, "vacancies_processed": c_plus_2, "average_salary":c_plus_3},
     #         'C':{'vacancies_found':c_1, "vacancies_processed": c_2, "average_salary":c_3},
     #         'Shell':{'vacancies_found':shell_1, "vacancies_processed": shell_2, "average_salary":shell_3}
-    #     }
+    #         }
     #
-    #     print(average_salary_of_vacancies_all_pages)
+    #       print(average_salary_of_vacancies_all_pages)
     #
     # except requests.exceptions.HTTPError as error:
-    #     exit("Can't get data from server:\n{0}".format(error))
+    #       exit("Can't get data from server:\n{0}".format(error))
 
 
-    url = 'https://api.superjob.ru/2.33/vacancies'
+    url = 'https://api.superjob.ru/2.33/vacancies/?catalogues=33'
     headers = {'X-Api-App-Id': f'{super_job_secret_key}'}
-    response = requests.post(url, headers=headers)
+    params={'catalogue': 'Программирование'}
+    response = requests.get(url, params=params, headers=headers)
     response.raise_for_status()
+    print(response.json()['objects'][0]['catalogues'][0]['positions'][0]['title'])
+
+    for vacancy_index, vacancy in enumerate(response.json()['objects']):
+        vacancies_list = response.json()['objects'][vacancy_index]['profession']
+        vacancy_town = response.json()['objects'][vacancy_index]['client']['town']['title']
+        vacancy_profession = response.json()['objects'][vacancy_index]['catalogues'][vacancy_index]['positions'][vacancy_index]['title']
+
+        if vacancy_town == 'Москва' and vacancy_profession == 'Разработка, программирование':
+            print(vacancies_list +', '+ vacancy_town)
+
+
+
+
+
+
+
+
+
 
 
 
