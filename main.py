@@ -1,6 +1,7 @@
 import requests
 from datetime import datetime, timedelta
 from itertools import count
+from dotenv import load_dotenv
 
 
 def get_fresh_vacancies_from_moscow(url):
@@ -77,6 +78,9 @@ def average_predict_rub_salary(programming_language):
 
 if __name__ == '__main__':
 
+    load_dotenv()
+    super_job_secret_key = os.getenv("super_job_secret_key")
+
     # get_fresh_vacancies_from_moscow('https://api.hh.ru/vacancies?text=%D0%BF%D1%80%D0%BE%D0%B3%D1%80%D0%B0%D0%BC%D0%BC%D0%B8%D1%81%D1%82%20Python')
     #
     # print(average_predict_rub_salary_per_page('Python'))
@@ -126,7 +130,7 @@ if __name__ == '__main__':
 
 
     url = 'https://api.superjob.ru/2.33/vacancies'
-    headers = {'X-Api-App-Id': 'v3.r.132999182.2aec9940bf8d6a965fbb69eb1e598b4f0b94b599.8c58053773f294ecce467d53ced827eae273857a'}
+    headers = {'X-Api-App-Id': f'{super_job_secret_key}'}
     response = requests.post(url, headers=headers)
     response.raise_for_status()
 
