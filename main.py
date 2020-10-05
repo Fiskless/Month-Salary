@@ -1,42 +1,19 @@
 import requests
-from datetime import datetime, timedelta
 from itertools import count
 import os
 from dotenv import load_dotenv
 
 
-def get_fresh_vacancies_from_moscow(url):
 
-    response = requests.get(url)
-    response.raise_for_status()
+def average_predict_rub_salary_per_page_hh(programming_language, page=0):
 
-    date_month_ago = (datetime.now()-timedelta(days=31))
-    for vacancy_index, hh_json in enumerate(response.json()['items']):
-        date_of_publication = (response.json()['items'][vacancy_index]['published_at'])
-        if response.json()['items'][vacancy_index]['area']['name'] == "Москва" and (int(date_of_publication [0:4]), int(date_of_publication [6:7]),int(date_of_publication [8:10])) > (int(date_month_ago.year),int(date_month_ago.month),int(date_month_ago.day)):
-            print(response.json()['items'][vacancy_index])
-
-
-
-def count_the_number_of_vacancies(programming_language):
-    url = f'https://api.hh.ru/vacancies?text=%D0%9F%D1%80%D0%BE%D0%B3%D1%80%D0%B0%D0%BC%D0%BC%D0%B8%D1%81%D1%82%20{programming_language}'
-    response = requests.get(url)
-    response.raise_for_status()
-
-    return response.json()['found']
-
-
-def get_salary_from_vacancies(url):
-
-    response = requests.get(url)
-    response.raise_for_status()
-
-    for vacancy_index, vacancy_json in enumerate (response.json()['items']):
-        print(vacancy_index, response.json()['items'][vacancy_index]['salary'])
-
-def average_predict_rub_salary_per_page(programming_language, params=None):
-
-    url = f'https://api.hh.ru/vacancies?text=%D0%9F%D1%80%D0%BE%D0%B3%D1%80%D0%B0%D0%BC%D0%BC%D0%B8%D1%81%D1%82%20{programming_language}'
+    url = f'https://api.hh.ru/vacancies'
+    params = {
+        'text': f'Программист{programming_language}',
+        'period':'30',
+        'area' : '1',
+        'page' : page
+    }
     response = requests.get(url, params=params)
     response.raise_for_status()
     sum_salary, error, predict_salary, vacancy_index = 0,0,0,0
@@ -67,7 +44,7 @@ def average_predict_rub_salary(programming_language):
     vacancies_processed = 0
     sum_predict_rub_salary_all_pages = 0
     for page in count(0):
-        vacancy_numbers_per_page, average_salary_per_page, number_of_pages, vacancies_found = average_predict_rub_salary_per_page(programming_language, {'page': page})
+        vacancy_numbers_per_page, average_salary_per_page, number_of_pages, vacancies_found = average_predict_rub_salary_per_page_hh(programming_language, page)
         sum_predict_rub_salary_all_pages = sum_predict_rub_salary_all_pages + average_salary_per_page
         vacancies_processed = vacancies_processed + vacancy_numbers_per_page
         if page >= (number_of_pages-1):
@@ -77,44 +54,79 @@ def average_predict_rub_salary(programming_language):
     return vacancies_found, vacancies_processed, average_salary_all_pages
 
 
+def average_predict_rub_salary_per_page_sj(programming_language, page = 0 ):
+
+    url = 'https://api.superjob.ru/2.33/vacancies/'
+    headers = {'X-Api-App-Id': f'{super_job_secret_key}'}
+    params = {
+        'catalogues': '48',
+        'town': '4',
+        'page' : page,
+        'keyword': f'{programming_language}'
+    }
+    response = requests.get(url, params=params, headers=headers)
+    response.raise_for_status()
+    response.json()
+    print(response.json())
+
+    sum_salary, error, predict_salary, vacancy_index = 0,0,0,0
+    for vacancy_index, vacancy_json in enumerate(response.json()['objects']):
+        try:
+            lower_salary = response.json()['objects'][vacancy_index]['payment_from']
+            top_salary = response.json()['objects'][vacancy_index]['payment_to']
+            currency = response.json()['objects'][vacancy_index]['currency']
+            if currency != 'rub' or (top_salary == 0 and lower_salary == 0):
+                predict_salary = None
+                error = error +1
+            elif top_salary == 0: predict_salary = lower_salary*1.2
+            elif lower_salary == 0: predict_salary = top_salary*0.8
+            else: predict_salary = (lower_salary+top_salary)/2
+            sum_salary = sum_salary + predict_salary
+            print(lower_salary, top_salary, predict_salary)
+        except TypeError:
+            error = error + 1
+    number_of_pages = (response.json()['total']//20+1)
+    vacancy_numbers_per_page = vacancy_index + 1 - error
+    vacancies_found = response.json()['total']
+    if vacancy_numbers_per_page == 0:
+        average_salary_per_page = 0
+    else:
+        average_salary_per_page = int(sum_salary/(vacancy_numbers_per_page))
+    return (vacancy_numbers_per_page, average_salary_per_page, number_of_pages, vacancies_found)
+
+
+def predict_salary(lower_salary, top_salary):
+    if (top_salary == 0 and lower_salary == 0): predict_salary = None
+    elif top_salary == (0 or None): predict_salary = lower_salary*1.2
+    elif lower_salary == (0 or None): predict_salary = top_salary*0.8
+    else: predict_salary = (lower_salary+top_salary)/2
+    return predict_salary
+
+
+
+
+
+
+
+
 if __name__ == '__main__':
 
     load_dotenv()
     super_job_secret_key = os.getenv("SUPER_JOB_SECRET_KEY")
 
-    # get_fresh_vacancies_from_moscow('https://api.hh.ru/vacancies?text=%D0%BF%D1%80%D0%BE%D0%B3%D1%80%D0%B0%D0%BC%D0%BC%D0%B8%D1%81%D1%82%20Python')
-    #
-    # print(average_predict_rub_salary_per_page('Python'))
-    #
-    #
-    # get_salary_from_vacancies('https://api.hh.ru/vacancies?text=%D0%BF%D1%80%D0%BE%D0%B3%D1%80%D0%B0%D0%BC%D0%BC%D0%B8%D1%81%D1%82%20Python')
-    # #
-    # predict_rub_salary('Python')
-
-    # average_salary_of_vacancies_per_page = {
-    #     'Javascript':{'vacancies_found':count_the_number_of_vacancies('Javascript'), "vacancies_processed": average_predict_rub_salary('Javascript')[0], "average_salary":average_predict_rub_salary('Javascript')[1]},
-    #     'Java':{'vacancies_found':count_the_number_of_vacancies('Java'), "vacancies_processed": average_predict_rub_salary('Java')[0], "average_salary":average_predict_rub_salary('Java')[1]},
-    #     'Python':{'vacancies_found':count_the_number_of_vacancies('Python'), "vacancies_processed": average_predict_rub_salary('Python')[0], "average_salary":average_predict_rub_salary('Python')[1]},
-    #     'Ruby':{'vacancies_found':count_the_number_of_vacancies('Ruby'), "vacancies_processed": average_predict_rub_salary('Ruby')[0], "average_salary":average_predict_rub_salary('Ruby')[1]},
-    #     'PHP':{'vacancies_found':count_the_number_of_vacancies('PHP'), "vacancies_processed": average_predict_rub_salary('PHP')[0], "average_salary":average_predict_rub_salary('PHP')[1]},
-    #     'C++':{'vacancies_found':count_the_number_of_vacancies('C++'), "vacancies_processed": average_predict_rub_salary('C++')[0], "average_salary":average_predict_rub_salary('C++')[1]},
-    #     'C':{'vacancies_found':count_the_number_of_vacancies('C'), "vacancies_processed": average_predict_rub_salary('C')[0], "average_salary":average_predict_rub_salary('C')[1]},
-    #     'Shell':{'vacancies_found':count_the_number_of_vacancies('Shell'), "vacancies_processed": average_predict_rub_salary('Shell')[0], "average_salary":average_predict_rub_salary('Shell')[1]}
-    # }
-    # print(average_salary_of_vacancies_per_page)
 
     # try:
     #       javascript_1, javascript_2, javascript_3 = average_predict_rub_salary('Javascript')
-    #     java_1, java_2, java_3 = average_predict_rub_salary('Javascript')
-    #     python_1, python_2, python_3 = average_predict_rub_salary('Python')
-    #     ruby_1, ruby_2, ruby_3 = average_predict_rub_salary('Ruby')
-    #     php_1, php_2,php_3 = average_predict_rub_salary('PHP')
-    #     c_plus_1, c_plus_2, c_plus_3 = average_predict_rub_salary('C++')
-    #     c_1, c_2, c_3 = average_predict_rub_salary('C')
-    #     shell_1, shell_2, shell_3 = average_predict_rub_salary('Shell')
+    #       java_1, java_2, java_3 = average_predict_rub_salary('Javascript')
+    #       python_1, python_2, python_3 = average_predict_rub_salary('Python')
+    #       ruby_1, ruby_2, ruby_3 = average_predict_rub_salary('Ruby')
+    #       php_1, php_2,php_3 = average_predict_rub_salary('PHP')
+    #       c_plus_1, c_plus_2, c_plus_3 = average_predict_rub_salary('C++')
+    #       c_1, c_2, c_3 = average_predict_rub_salary('C')
+    #       shell_1, shell_2, shell_3 = average_predict_rub_salary('Shell')
     #
-          # average_salary_of_vacancies_all_pages = {
-          #   'Javascript':{'vacancies_found':javascript_1, "vacancies_processed": javascript_2, "average_salary":javascript_3},
+    #       average_salary_of_vacancies_all_pages = {
+    #         'Javascript':{'vacancies_found':javascript_1, "vacancies_processed": javascript_2, "average_salary":javascript_3},
     #         'Java':{'vacancies_found':java_1, "vacancies_processed": java_2, "average_salary":java_3},
     #         'Python':{'vacancies_found':python_1, "vacancies_processed": python_2, "average_salary":python_3},
     #         'Ruby':{'vacancies_found':ruby_1, "vacancies_processed": ruby_2, "average_salary":ruby_3},
@@ -130,60 +142,29 @@ if __name__ == '__main__':
     #       exit("Can't get data from server:\n{0}".format(error))
 
 
-    url = 'https://api.superjob.ru/2.33/vacancies/?catalogues=33'
-    headers = {'X-Api-App-Id': f'{super_job_secret_key}'}
-    params={'catalogue': 'Программирование'}
-    response = requests.get(url, params=params, headers=headers)
-    response.raise_for_status()
-    print(response.json()['objects'][0]['catalogues'][0]['positions'][0]['title'])
-
-    for vacancy_index, vacancy in enumerate(response.json()['objects']):
-        vacancies_list = response.json()['objects'][vacancy_index]['profession']
-        vacancy_town = response.json()['objects'][vacancy_index]['client']['town']['title']
-        vacancy_profession = response.json()['objects'][vacancy_index]['catalogues'][vacancy_index]['positions'][vacancy_index]['title']
-
-        if vacancy_town == 'Москва' and vacancy_profession == 'Разработка, программирование':
-            print(vacancies_list +', '+ vacancy_town)
 
 
 
 
+    # url = 'https://api.superjob.ru/2.33/vacancies/'
+    # headers = {'X-Api-App-Id': f'{super_job_secret_key}'}
+    # params = {
+    #     'catalogues': '48',
+    #     'town': '4'
+    # }
+    # response = requests.get(url, params=params, headers=headers)
+    # response.raise_for_status()
+    #
+    #
+    # for page in count(0):
+    #     average_predict_rub_salary_per_page_sj('48', page)
+    #     if page >= (response.json()['total']//20):
+    #         break
 
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
+    # sum_salary = 0
+    # for vacancy_index, vacancy in enumerate(response.json()['objects']):
+    #     vacancies_list = response.json()['objects'][vacancy_index]['profession']
+    #     vacancy_town = response.json()['objects'][vacancy_index]['town']['title']
+    #     vacancy_currency = response.json()['objects'][vacancy_index]['currency']
+    #     print(vacancies_list, vacancy_town)
