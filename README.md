@@ -4,9 +4,7 @@ Programming vacancies compare
 How to install
 [TODO: tell people what should be done]
 
-Project Goals
-The code is written for educational purposes on 
-'
+```
 python main.py
 +SuperJob Moscow-------+-----------------+---------------------+----------------+
 | Programming language | Vacancies found | Vacancies processed | Average salary |
@@ -32,4 +30,7 @@ python main.py
 | C                    | 7283            | 988                 |         140053 |
 | Shell                | 144             | 30                  |         161636 |
 +----------------------+-----------------+---------------------+----------------+
-'online-course for web-developers dvmn.org.
+```
+
+Project Goals
+The code is written for educational purposes on online-course for web-developers dvmn.org.
