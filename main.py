@@ -146,7 +146,7 @@ if __name__ == '__main__':
           scala_1, scala_2, scala_3 = average_predict_rub_salary(average_predict_rub_salary_per_page_sj, 'Scala')
           c_1, c_2, c_3 = average_predict_rub_salary(average_predict_rub_salary_per_page_sj, 'C')
           shell_1, shell_2, shell_3 = average_predict_rub_salary(average_predict_rub_salary_per_page_sj, 'Shell')
-    #
+
           average_salary_of_vacancies_all_pages_sj = {
           'Javascript':{'vacancies_found':javascript_1, "vacancies_processed": javascript_2, "average_salary":javascript_3},
           'Java':{'vacancies_found':java_1, "vacancies_processed": java_2, "average_salary":java_3},
@@ -157,36 +157,10 @@ if __name__ == '__main__':
           'C':{'vacancies_found':c_1, "vacancies_processed": c_2, "average_salary":c_3},
           'Shell':{'vacancies_found':shell_1, "vacancies_processed": shell_2, "average_salary":shell_3}
           }
-    #
-    #       print(average_salary_of_vacancies_all_pages_hh)
-    #       print(average_salary_of_vacancies_all_pages_sj)
+
           predict_average_salary_in_table_form('SuperJob Moscow', average_salary_of_vacancies_all_pages_sj)
           predict_average_salary_in_table_form('HeadHunter Moscow', average_salary_of_vacancies_all_pages_hh)
 
-
-
-
-
-
-
-    #
-
-          # title = 'SuperJob Moscow'
-          #
-          # table_data = (
-          #   ('Programming language', 'Vacancies found', 'Vacancies processed', 'Average salary' ),
-          #   ('Mk5', '2007-2009', 'The Golf Mk5 Variant was\nintroduced in 2007.', '1'),
-          #   ('MKVI', '2009-2013', 'Might actually be Mk5.', '2'),
-          #    )
-          #
-          #
-          # table_instance = AsciiTable(table_data, title)
-          # table_instance.justify_columns[3] = 'right'
-          # print(table_instance.table)
-          # print()
-
-
-    #
     except requests.exceptions.HTTPError as error:
           exit("Can't get data from server:\n{0}".format(error))
 
