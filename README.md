@@ -1,7 +1,7 @@
 Programming vacancies compare
 
-This project allow us to get data from from job search sites such as HeadHunter and Superjob by using it API (API HeadHunter (https://dev.hh.ru/), API SuperJob(https://api.superjob.ru/). 
-[TODO: here would be project description]
+This project allow us to get data from from job search sites such as HeadHunter and Superjob by using it API (API HeadHunter (https://dev.hh.ru/), API SuperJob(https://api.superjob.ru/). Through this project we can compare the vacancies which we interested in. As a result we get two tables where number of vacancies found, and average salary through the vacancies which are in column "Vacancies processed", are presented for multiple programming languages.
+
 
 How to install
 
