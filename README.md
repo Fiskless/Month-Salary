@@ -20,7 +20,7 @@ Website	https://www.anysute.com
 Access options
 
 ID	9999
-Secret key	'Your secret key'
+Secret key	'Your secret key for API SuperJob'
 
 [TODO: tell people what should be done]
 
