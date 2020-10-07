@@ -2,6 +2,7 @@ import requests
 from itertools import count
 import os
 from dotenv import load_dotenv
+from terminaltables import AsciiTable
 
 
 def average_predict_rub_salary_per_page_hh(programming_language, page=0):
@@ -140,3 +141,15 @@ if __name__ == '__main__':
 
     except requests.exceptions.HTTPError as error:
           exit("Can't get data from server:\n{0}".format(error))
+
+
+
+
+    table_data = [
+        ['Heading1', 'Heading2'],
+        ['row1 column1', 'row1 column2'],
+        ['row2 column1', 'row2 column2'],
+        ['row3 column1', 'row3 column2']
+    ]
+    table = AsciiTable(table_data)
+    print(table.table)
