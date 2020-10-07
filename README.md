@@ -12,11 +12,11 @@ Application options
 
 Application Name	JobJob
 App Description	123qwe
-Application site	https://www.anysute.com
+Application site	https://www.anysite.com
 Callback URL	
 The contact person	JobMaster
 Email the address	example@mail.ru
-Website	https://www.anysute.com
+Website	https://www.anysite.com
 
 Access options
 
