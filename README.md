@@ -3,7 +3,7 @@
 This project allow us to get data from from job search sites such as HeadHunter and Superjob by using it API (API HeadHunter (https://dev.hh.ru/), API SuperJob(https://api.superjob.ru/). 
 [TODO: here would be project description]
 
-How to install
+### How to install
 
 For API HeadHunter you don't need secret key.
 For API SuperJob you need one. In order to get it you should register application. You can use any data, nobody will check it. After registrate your appliction data will be as shown below. We are interested in "Secret key" in chapter "Access options". The example of "Secret key" is in file example.end in directory of this project. 
@@ -57,5 +57,5 @@ $python main.py
 +----------------------+-----------------+---------------------+----------------+
 `````
 
-Project Goals
+### Project Goals
 The code is written for educational purposes on online-course for web-developers dvmn.org.
