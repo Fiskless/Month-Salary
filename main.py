@@ -39,12 +39,12 @@ def average_predict_rub_salary_per_page_hh(programming_language, page=0):
     return (vacancy_numbers_per_page, average_salary_per_page, number_of_pages, vacancies_found)
 
 
-def average_predict_rub_salary(programming_language):
+def average_predict_rub_salary(function_average_predict_rub_salary_per_page, programming_language):
 
     vacancies_processed = 0
     sum_predict_rub_salary_all_pages = 0
     for page in count(0):
-        vacancy_numbers_per_page, average_salary_per_page, number_of_pages, vacancies_found = average_predict_rub_salary_per_page_sj(programming_language, page)
+        vacancy_numbers_per_page, average_salary_per_page, number_of_pages, vacancies_found = function_average_predict_rub_salary_per_page(programming_language, page)
         sum_predict_rub_salary_all_pages = sum_predict_rub_salary_all_pages + average_salary_per_page
         vacancies_processed = vacancies_processed + vacancy_numbers_per_page
         if page >= (number_of_pages-1):
@@ -67,24 +67,21 @@ def average_predict_rub_salary_per_page_sj(programming_language, page = 0 ):
     response = requests.get(url, params=params, headers=headers)
     response.raise_for_status()
     response.json()
-    # print(response.json())
-
     sum_salary, error, predict_salary, vacancy_index = 0,0,0,0
     for vacancy_index, vacancy_json in enumerate(response.json()['objects']):
+        lower_salary = response.json()['objects'][vacancy_index]['payment_from']
+        top_salary = response.json()['objects'][vacancy_index]['payment_to']
+        currency = response.json()['objects'][vacancy_index]['currency']
         try:
-            lower_salary = response.json()['objects'][vacancy_index]['payment_from']
-            top_salary = response.json()['objects'][vacancy_index]['payment_to']
-            currency = response.json()['objects'][vacancy_index]['currency']
-            if currency != 'rub' or (top_salary == 0 and lower_salary == 0):
+            if currency != ('rub' or 'RUR') or (top_salary == 0 and lower_salary == 0):
                 predict_salary = 0
                 error = error +1
             elif top_salary == 0: predict_salary = lower_salary*1.2
             elif lower_salary == 0: predict_salary = top_salary*0.8
             else: predict_salary = (lower_salary+top_salary)/2
-            sum_salary = sum_salary + predict_salary
-            # print(lower_salary, top_salary, predict_salary)
         except TypeError:
             error = error + 1
+        sum_salary = sum_salary + predict_salary
     number_of_pages = (response.json()['total']//20+1)
     vacancy_numbers_per_page = vacancy_index + 1 - error
     vacancies_found = response.json()['total']
@@ -96,24 +93,16 @@ def average_predict_rub_salary_per_page_sj(programming_language, page = 0 ):
 
 
 def predict_salary(currency, lower_salary, top_salary):
-
-    if currency != ('rub' or 'RUR') or (top_salary == 0 and lower_salary == 0):
-            predict_salary = 0
-            error = error +1
-    elif top_salary == 0: predict_salary = lower_salary*1.2
-    elif lower_salary == 0: predict_salary = top_salary*0.8
-    else: predict_salary = (lower_salary+top_salary)/2
+    try:
+        if currency != ('rub' or 'RUR') or (top_salary == 0 and lower_salary == 0):
+                predict_salary = 0
+                error = error +1
+        elif top_salary == 0: predict_salary = lower_salary*1.2
+        elif lower_salary == 0: predict_salary = top_salary*0.8
+        else: predict_salary = (lower_salary+top_salary)/2
+    except TypeError:
+        error = error + 1
     return predict_salary, error
-
-
-
-
-
-
-
-
-
-
 
 if __name__ == '__main__':
 
@@ -122,33 +111,51 @@ if __name__ == '__main__':
 
 
     try:
-          javascript_1, javascript_2, javascript_3 = average_predict_rub_salary('Javascript')
-          # java_1, java_2, java_3 = average_predict_rub_salary('Javascript')
-          # python_1, python_2, python_3 = average_predict_rub_salary('Python')
-          # ruby_1, ruby_2, ruby_3 = average_predict_rub_salary('Ruby')
-          # php_1, php_2,php_3 = average_predict_rub_salary('PHP')
-          # c_plus_1, c_plus_2, c_plus_3 = average_predict_rub_salary('C++')
-          # c_1, c_2, c_3 = average_predict_rub_salary('C')
-          # shell_1, shell_2, shell_3 = average_predict_rub_salary('Shell')
+          # javascript_1, javascript_2, javascript_3 = average_predict_rub_salary(average_predict_rub_salary_per_page_hh, 'Javascript')
+          # java_1, java_2, java_3 = average_predict_rub_salary(average_predict_rub_salary_per_page_hh, 'Javascript')
+          # python_1, python_2, python_3 = average_predict_rub_salary(average_predict_rub_salary_per_page_hh, 'Python')
+          # ruby_1, ruby_2, ruby_3 = average_predict_rub_salary(average_predict_rub_salary_per_page_hh, 'Ruby')
+          # php_1, php_2,php_3 = average_predict_rub_salary(average_predict_rub_salary_per_page_hh, 'PHP')
+          # c_plus_1, c_plus_2, c_plus_3 = average_predict_rub_salary(average_predict_rub_salary_per_page_hh, 'C++')
+          # c_1, c_2, c_3 = average_predict_rub_salary(average_predict_rub_salary_per_page_hh, 'C')
+          # shell_1, shell_2, shell_3 = average_predict_rub_salary(average_predict_rub_salary_per_page_hh, 'Shell')
+          #
+          # average_salary_of_vacancies_all_pages_hh = {
+          #   'Javascript':{'vacancies_found':javascript_1, "vacancies_processed": javascript_2, "average_salary":javascript_3},
+          #   'Java':{'vacancies_found':java_1, "vacancies_processed": java_2, "average_salary":java_3},
+          #   'Python':{'vacancies_found':python_1, "vacancies_processed": python_2, "average_salary":python_3},
+          #   'Ruby':{'vacancies_found':ruby_1, "vacancies_processed": ruby_2, "average_salary":ruby_3},
+          #   'PHP':{'vacancies_found':php_1, "vacancies_processed": php_2, "average_salary":php_3},
+          #   'C++':{'vacancies_found':c_plus_1, "vacancies_processed": c_plus_2, "average_salary":c_plus_3},
+          #   'C':{'vacancies_found':c_1, "vacancies_processed": c_2, "average_salary":c_3},
+          #   'Shell':{'vacancies_found':shell_1, "vacancies_processed": shell_2, "average_salary":shell_3}
+          #   }
+          javascript_1, javascript_2, javascript_3 = average_predict_rub_salary(average_predict_rub_salary_per_page_sj, 'Javascript')
+          # java_1, java_2, java_3 = average_predict_rub_salary(average_predict_rub_salary_per_page_sj, 'Javascript')
+          # python_1, python_2, python_3 = average_predict_rub_salary(average_predict_rub_salary_per_page_sj, 'Python')
+          # ruby_1, ruby_2, ruby_3 = average_predict_rub_salary(average_predict_rub_salary_per_page_sj, 'Ruby')
+          # php_1, php_2,php_3 = average_predict_rub_salary(average_predict_rub_salary_per_page_sj, 'PHP')
+          # c_plus_1, c_plus_2, c_plus_3 = average_predict_rub_salary(average_predict_rub_salary_per_page_sj, 'C++')
+          # c_1, c_2, c_3 = average_predict_rub_salary(average_predict_rub_salary_per_page_sj, 'C')
+          # shell_1, shell_2, shell_3 = average_predict_rub_salary(average_predict_rub_salary_per_page_sj, 'Shell')
 
-          average_salary_of_vacancies_all_pages = {
-            'Javascript':{'vacancies_found':javascript_1, "vacancies_processed": javascript_2, "average_salary":javascript_3},
-            # 'Java':{'vacancies_found':java_1, "vacancies_processed": java_2, "average_salary":java_3},
-            # 'Python':{'vacancies_found':python_1, "vacancies_processed": python_2, "average_salary":python_3},
-            # 'Ruby':{'vacancies_found':ruby_1, "vacancies_processed": ruby_2, "average_salary":ruby_3},
-            # 'PHP':{'vacancies_found':php_1, "vacancies_processed": php_2, "average_salary":php_3},
-            # 'C++':{'vacancies_found':c_plus_1, "vacancies_processed": c_plus_2, "average_salary":c_plus_3},
-            # 'C':{'vacancies_found':c_1, "vacancies_processed": c_2, "average_salary":c_3},
-            # 'Shell':{'vacancies_found':shell_1, "vacancies_processed": shell_2, "average_salary":shell_3}
-            }
+          average_salary_of_vacancies_all_pages_sj = {
+          'Javascript':{'vacancies_found':javascript_1, "vacancies_processed": javascript_2, "average_salary":javascript_3},
+          # 'Java':{'vacancies_found':java_1, "vacancies_processed": java_2, "average_salary":java_3},
+          # 'Python':{'vacancies_found':python_1, "vacancies_processed": python_2, "average_salary":python_3},
+          # 'Ruby':{'vacancies_found':ruby_1, "vacancies_processed": ruby_2, "average_salary":ruby_3},
+          # 'PHP':{'vacancies_found':php_1, "vacancies_processed": php_2, "average_salary":php_3},
+          # 'C++':{'vacancies_found':c_plus_1, "vacancies_processed": c_plus_2, "average_salary":c_plus_3},
+          # 'C':{'vacancies_found':c_1, "vacancies_processed": c_2, "average_salary":c_3},
+          # 'Shell':{'vacancies_found':shell_1, "vacancies_processed": shell_2, "average_salary":shell_3}
+          }
 
-          print(average_salary_of_vacancies_all_pages)
+          # print(average_salary_of_vacancies_all_pages_hh)
+          print(average_salary_of_vacancies_all_pages_sj)
 
     except requests.exceptions.HTTPError as error:
           exit("Can't get data from server:\n{0}".format(error))
     #
-
-
 
     # url = 'https://api.superjob.ru/2.33/vacancies/'
     # headers = {'X-Api-App-Id': f'{super_job_secret_key}'}
@@ -164,7 +171,6 @@ if __name__ == '__main__':
     #     average_predict_rub_salary_per_page_sj('48', page)
     #     if page >= (response.json()['total']//20):
     #         break
-
 
     # sum_salary = 0
     # for vacancy_index, vacancy in enumerate(response.json()['objects']):
