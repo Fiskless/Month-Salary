@@ -25,8 +25,6 @@ def average_predict_rub_salary_per_page_hh(programming_language, page=0):
             sum_salary = sum_salary + predict_salary
         except TypeError:
             error = error + 1
-
-
     number_of_pages = response.json()['pages']
     vacancy_numbers_per_page = vacancy_index + 1 - error
     vacancies_found = response.json()['found']
@@ -48,7 +46,6 @@ def average_predict_rub_salary(function_average_predict_rub_salary_per_page, pro
         if page >= (number_of_pages-1):
             break
     average_salary_all_pages = int(sum_predict_rub_salary_all_pages/(page+1))
-
     return vacancies_found, vacancies_processed, average_salary_all_pages
 
 
@@ -70,23 +67,7 @@ def average_predict_rub_salary_per_page_sj(programming_language, page = 0 ):
         lower_salary = response.json()['objects'][vacancy_index]['payment_from']
         top_salary = response.json()['objects'][vacancy_index]['payment_to']
         currency = response.json()['objects'][vacancy_index]['currency']
-
         predict_salary, error = calculate_predict_salary(currency, lower_salary, top_salary, 'rub', error)
-        # predict_salary = 0
-        # if currency != 'rub' or (top_salary == 0 and lower_salary == 0):
-        #     error = error +1
-        # elif top_salary == 0 or top_salary == None: predict_salary = lower_salary*1.2
-        # elif lower_salary == 0 or lower_salary == None: predict_salary = top_salary*0.8
-        # else: predict_salary = (lower_salary+top_salary)/2
-        # try:
-        #     if currency != ('rub') or (top_salary == 0 and lower_salary == 0):
-        #         predict_salary = 0
-        #         error = error +1
-        #     elif top_salary == 0: predict_salary = lower_salary*1.2
-        #     elif lower_salary == 0: predict_salary = top_salary*0.8
-        #     else: predict_salary = (lower_salary+top_salary)/2
-        # except TypeError:
-        #     error = error + 1
         sum_salary = sum_salary + predict_salary
     number_of_pages = (response.json()['total']//20+1)
     vacancy_numbers_per_page = vacancy_index + 1 - error
@@ -99,6 +80,7 @@ def average_predict_rub_salary_per_page_sj(programming_language, page = 0 ):
 
 
 def calculate_predict_salary(currency, lower_salary, top_salary, valid_currency, error = 0):
+
         predict_salary = 0
         if currency != valid_currency or (top_salary == 0 and lower_salary == 0):
             error = error +1
@@ -122,7 +104,7 @@ if __name__ == '__main__':
           scala_1, scala_2, scala_3 = average_predict_rub_salary(average_predict_rub_salary_per_page_hh, 'Scala')
           c_1, c_2, c_3 = average_predict_rub_salary(average_predict_rub_salary_per_page_hh, 'C')
           shell_1, shell_2, shell_3 = average_predict_rub_salary(average_predict_rub_salary_per_page_hh, 'Shell')
-          #
+
           average_salary_of_vacancies_all_pages_hh = {
             'Javascript':{'vacancies_found':javascript_1, "vacancies_processed": javascript_2, "average_salary":javascript_3},
             'Java':{'vacancies_found':java_1, "vacancies_processed": java_2, "average_salary":java_3},
@@ -158,4 +140,3 @@ if __name__ == '__main__':
 
     except requests.exceptions.HTTPError as error:
           exit("Can't get data from server:\n{0}".format(error))
-   
