@@ -1,11 +1,36 @@
 Programming vacancies compare
+
+This project allow us to get data from from job search sites such as HeadHunter and Superjob by using it API (API HeadHunter (https://dev.hh.ru/), API SuperJob(https://api.superjob.ru/). 
 [TODO: here would be project description]
 
 How to install
+
+For API HeadHunter you don't need secret key.
+For API SuperJob you need one. In order to get it you should register application. You can use any data, nobody will check it. After registrate your appliction data will be as shown below. We are interested in "Secret key" in chapter "Access options". The example of "Secret key" is in file example.end in directory of this project. 
+ ````
+Application options
+
+Application Name	JobJob
+App Description	123qwe
+Application site	https://www.anysute.com
+Callback URL	
+The contact person	JobMaster
+Email the address	example@mail.ru
+Website	https://www.anysute.com
+
+Access options
+
+ID	9999
+Secret key	'Your secret key'
+
 [TODO: tell people what should be done]
 
-```
-python main.py
+````
+
+The result of this project is shown below:
+
+`````
+$python main.py
 +SuperJob Moscow-------+-----------------+---------------------+----------------+
 | Programming language | Vacancies found | Vacancies processed | Average salary |
 +----------------------+-----------------+---------------------+----------------+
@@ -30,7 +55,7 @@ python main.py
 | C                    | 7283            | 988                 |         140053 |
 | Shell                | 144             | 30                  |         161636 |
 +----------------------+-----------------+---------------------+----------------+
-```
+`````
 
 Project Goals
 The code is written for educational purposes on online-course for web-developers dvmn.org.
