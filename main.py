@@ -5,6 +5,7 @@ from dotenv import load_dotenv
 from terminaltables import AsciiTable
 
 
+
 def average_predict_rub_salary_per_page_hh(programming_language, page=0):
 
     url = f'https://api.hh.ru/vacancies'
@@ -90,6 +91,27 @@ def calculate_predict_salary(currency, lower_salary, top_salary, valid_currency,
         else: predict_salary = (lower_salary+top_salary)/2
         return predict_salary, error
 
+def predict_average_salary_in_table_form(title, dict_input):
+
+    title = title
+    programming_language = list(dict_input.keys())
+
+    table_data = (
+        ('Programming language', 'Vacancies found', 'Vacancies processed', 'Average salary' ),
+        (programming_language[0], dict_input[programming_language[0]]['vacancies_found'], dict_input[programming_language[0]]['vacancies_processed'], dict_input[programming_language[0]]['average_salary']),
+        (programming_language[1], dict_input[programming_language[1]]['vacancies_found'], dict_input[programming_language[1]]['vacancies_processed'], dict_input[programming_language[1]]['average_salary']),
+        (programming_language[2], dict_input[programming_language[2]]['vacancies_found'], dict_input[programming_language[2]]['vacancies_processed'], dict_input[programming_language[2]]['average_salary']),
+        (programming_language[3], dict_input[programming_language[3]]['vacancies_found'], dict_input[programming_language[3]]['vacancies_processed'], dict_input[programming_language[3]]['average_salary']),
+        (programming_language[4], dict_input[programming_language[4]]['vacancies_found'], dict_input[programming_language[4]]['vacancies_processed'], dict_input[programming_language[4]]['average_salary']),
+        (programming_language[5], dict_input[programming_language[5]]['vacancies_found'], dict_input[programming_language[5]]['vacancies_processed'], dict_input[programming_language[5]]['average_salary']),
+        (programming_language[6], dict_input[programming_language[6]]['vacancies_found'], dict_input[programming_language[6]]['vacancies_processed'], dict_input[programming_language[6]]['average_salary']),
+        (programming_language[7], dict_input[programming_language[7]]['vacancies_found'], dict_input[programming_language[7]]['vacancies_processed'], dict_input[programming_language[7]]['average_salary']))
+    table_instance = AsciiTable(table_data, title)
+    table_instance.justify_columns[3] = 'right'
+    print(table_instance.table)
+
+
+
 if __name__ == '__main__':
 
     load_dotenv()
@@ -124,7 +146,7 @@ if __name__ == '__main__':
           scala_1, scala_2, scala_3 = average_predict_rub_salary(average_predict_rub_salary_per_page_sj, 'Scala')
           c_1, c_2, c_3 = average_predict_rub_salary(average_predict_rub_salary_per_page_sj, 'C')
           shell_1, shell_2, shell_3 = average_predict_rub_salary(average_predict_rub_salary_per_page_sj, 'Shell')
-
+    #
           average_salary_of_vacancies_all_pages_sj = {
           'Javascript':{'vacancies_found':javascript_1, "vacancies_processed": javascript_2, "average_salary":javascript_3},
           'Java':{'vacancies_found':java_1, "vacancies_processed": java_2, "average_salary":java_3},
@@ -135,21 +157,39 @@ if __name__ == '__main__':
           'C':{'vacancies_found':c_1, "vacancies_processed": c_2, "average_salary":c_3},
           'Shell':{'vacancies_found':shell_1, "vacancies_processed": shell_2, "average_salary":shell_3}
           }
+    #
+    #       print(average_salary_of_vacancies_all_pages_hh)
+    #       print(average_salary_of_vacancies_all_pages_sj)
+          predict_average_salary_in_table_form('SuperJob Moscow', average_salary_of_vacancies_all_pages_sj)
+          predict_average_salary_in_table_form('HeadHunter Moscow', average_salary_of_vacancies_all_pages_hh)
 
-          print(average_salary_of_vacancies_all_pages_hh)
-          print(average_salary_of_vacancies_all_pages_sj)
 
+
+
+
+
+
+    #
+
+          # title = 'SuperJob Moscow'
+          #
+          # table_data = (
+          #   ('Programming language', 'Vacancies found', 'Vacancies processed', 'Average salary' ),
+          #   ('Mk5', '2007-2009', 'The Golf Mk5 Variant was\nintroduced in 2007.', '1'),
+          #   ('MKVI', '2009-2013', 'Might actually be Mk5.', '2'),
+          #    )
+          #
+          #
+          # table_instance = AsciiTable(table_data, title)
+          # table_instance.justify_columns[3] = 'right'
+          # print(table_instance.table)
+          # print()
+
+
+    #
     except requests.exceptions.HTTPError as error:
           exit("Can't get data from server:\n{0}".format(error))
 
 
 
 
-    table_data = [
-        ['Heading1', 'Heading2'],
-        ['row1 column1', 'row1 column2'],
-        ['row2 column1', 'row2 column2'],
-        ['row3 column1', 'row3 column2']
-    ]
-    table = AsciiTable(table_data)
-    print(table.table)
