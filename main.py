@@ -5,19 +5,18 @@ from dotenv import load_dotenv
 from terminaltables import AsciiTable
 
 
-
 def predict_average_rub_salary_per_page_hh(programming_language, page=0):
 
     url = f'https://api.hh.ru/vacancies'
     params = {
         'text': f'Программист{programming_language}',
-        'period':'30',
-        'area' : '1',
-        'page' : page
+        'period': '30',
+        'area': '1',
+        'page': page
     }
     response = requests.get(url, params=params)
     response.raise_for_status()
-    sum_salary, error, predicted_salary, vacancy_number = 0,0,0,0
+    sum_salary, error, predicted_salary, vacancy_number = 0, 0, 0, 0
     resp = response.json()
     vacancies = resp['items']
     for vacancy_number, vacancy in enumerate(vacancies):
@@ -25,7 +24,7 @@ def predict_average_rub_salary_per_page_hh(programming_language, page=0):
             lower_salary = vacancies[vacancy_number]['salary']['from']
             top_salary = vacancies[vacancy_number]['salary']['to']
             currency = vacancies[vacancy_number]['salary']['currency']
-            predicted_salary, error = calculate_predict_salary(currency, lower_salary, top_salary,'RUR', error)
+            predicted_salary, error = calculate_predict_salary(currency, lower_salary, top_salary, 'RUR', error)
             sum_salary += predicted_salary
         except TypeError:
             error = error + 1
@@ -53,19 +52,19 @@ def predict_average_rub_salary_all_pages(input_function_name_of_predict_average_
     return vacancies_found, vacancies_processed, average_salary_all_pages
 
 
-def predict_average_rub_salary_per_page_sj(programming_language, page = 0 ):
+def predict_average_rub_salary_per_page_sj(programming_language, page=0):
 
     url = 'https://api.superjob.ru/2.33/vacancies/'
     headers = {'X-Api-App-Id': f'{super_job_secret_key}'}
     params = {
         'catalogues': '48',
         'town': '4',
-        'page' : page,
+        'page': page,
         'keyword': f'{programming_language}'
     }
     response = requests.get(url, params=params, headers=headers)
     response.raise_for_status()
-    sum_salary, error, predicted_salary, vacancy_number= 0,0,0,0
+    sum_salary, error, predicted_salary, vacancy_number = 0, 0, 0, 0
     resp = response.json()
     vacancies = resp['objects']
     for vacancy_number, vacancy in enumerate(vacancies):
@@ -84,11 +83,11 @@ def predict_average_rub_salary_per_page_sj(programming_language, page = 0 ):
     return vacancy_numbers_per_page, average_salary_per_page, number_of_pages, vacancies_found
 
 
-def calculate_predict_salary(currency, lower_salary, top_salary, valid_currency, error = 0):
+def calculate_predict_salary(currency, lower_salary, top_salary, valid_currency, error=0):
 
         predicted_salary = 0
         if currency != valid_currency or (top_salary == 0 and lower_salary == 0):
-            error = error +1
+            error = error+1
         elif top_salary == 0 or top_salary == None: predicted_salary = lower_salary*1.2
         elif lower_salary == 0 or lower_salary == None: predicted_salary = top_salary*0.8
         else: predicted_salary = (lower_salary+top_salary)/2
