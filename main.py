@@ -17,38 +17,39 @@ def predict_average_rub_salary_per_page_hh(programming_language, page=0):
     }
     response = requests.get(url, params=params)
     response.raise_for_status()
-    sum_salary, error, predict_salary, vacancy_number = 0,0,0,0
-    vacancies = response.json()['items']
+    sum_salary, error, predicted_salary, vacancy_number = 0,0,0,0
+    resp = response.json()
+    vacancies = resp['items']
     for vacancy_number, vacancy in enumerate(vacancies):
         try:
             lower_salary = vacancies[vacancy_number]['salary']['from']
             top_salary = vacancies[vacancy_number]['salary']['to']
             currency = vacancies[vacancy_number]['salary']['currency']
-            predict_salary, error = calculate_predict_salary(currency, lower_salary, top_salary,'RUR', error)
-            sum_salary = sum_salary + predict_salary
+            predicted_salary, error = calculate_predict_salary(currency, lower_salary, top_salary,'RUR', error)
+            sum_salary += predicted_salary
         except TypeError:
             error = error + 1
-    number_of_pages = response.json()['pages']
+    number_of_pages = resp['pages']
     vacancy_numbers_per_page = vacancy_number + 1 - error
-    vacancies_found = response.json()['found']
-    if vacancy_numbers_per_page == 0:
+    vacancies_found = resp['found']
+    try:
+        average_salary_per_page = int(sum_salary/vacancy_numbers_per_page)
+    except ZeroDivisionError:
         average_salary_per_page = 0
-    else:
-        average_salary_per_page = int(sum_salary/(vacancy_numbers_per_page))
-    return (vacancy_numbers_per_page, average_salary_per_page, number_of_pages, vacancies_found)
+    return vacancy_numbers_per_page, average_salary_per_page, number_of_pages, vacancies_found
 
 
 def predict_average_rub_salary_all_pages(input_function_name_of_predict_average_rub_salary_per_page, programming_language):
 
     vacancies_processed = 0
-    sum_predict_rub_salary_all_pages = 0
+    sum_predicted_rub_salary_all_pages = 0
     for page in count(0):
         vacancy_numbers_per_page, average_salary_per_page, number_of_pages, vacancies_found = input_function_name_of_predict_average_rub_salary_per_page(programming_language, page)
-        sum_predict_rub_salary_all_pages = sum_predict_rub_salary_all_pages + average_salary_per_page
-        vacancies_processed = vacancies_processed + vacancy_numbers_per_page
-        if page >= (number_of_pages-1):
+        sum_predicted_rub_salary_all_pages += average_salary_per_page
+        vacancies_processed += vacancy_numbers_per_page
+        if page >= number_of_pages-1:
             break
-    average_salary_all_pages = int(sum_predict_rub_salary_all_pages/(page+1))
+    average_salary_all_pages = int(sum_predicted_rub_salary_all_pages/(page+1))
     return vacancies_found, vacancies_processed, average_salary_all_pages
 
 
@@ -64,33 +65,34 @@ def predict_average_rub_salary_per_page_sj(programming_language, page = 0 ):
     }
     response = requests.get(url, params=params, headers=headers)
     response.raise_for_status()
-    sum_salary, error, predict_salary, vacancy_number= 0,0,0,0
-    vacancies = response.json()['objects']
+    sum_salary, error, predicted_salary, vacancy_number= 0,0,0,0
+    resp = response.json()
+    vacancies = resp['objects']
     for vacancy_number, vacancy in enumerate(vacancies):
         lower_salary = vacancies[vacancy_number]['payment_from']
         top_salary = vacancies[vacancy_number]['payment_to']
         currency = vacancies[vacancy_number]['currency']
-        predict_salary, error = calculate_predict_salary(currency, lower_salary, top_salary, 'rub', error)
-        sum_salary = sum_salary + predict_salary
-    number_of_pages = (response.json()['total']//20+1)
+        predicted_salary, error = calculate_predict_salary(currency, lower_salary, top_salary, 'rub', error)
+        sum_salary += predicted_salary
+    number_of_pages = (resp['total']//20+1)
     vacancy_numbers_per_page = vacancy_number + 1 - error
-    vacancies_found = response.json()['total']
-    if vacancy_numbers_per_page == 0:
+    vacancies_found = resp['total']
+    try:
+        average_salary_per_page = int(sum_salary/vacancy_numbers_per_page)
+    except ZeroDivisionError:
         average_salary_per_page = 0
-    else:
-        average_salary_per_page = int(sum_salary/(vacancy_numbers_per_page))
-    return (vacancy_numbers_per_page, average_salary_per_page, number_of_pages, vacancies_found)
+    return vacancy_numbers_per_page, average_salary_per_page, number_of_pages, vacancies_found
 
 
 def calculate_predict_salary(currency, lower_salary, top_salary, valid_currency, error = 0):
 
-        predict_salary = 0
+        predicted_salary = 0
         if currency != valid_currency or (top_salary == 0 and lower_salary == 0):
             error = error +1
-        elif top_salary == 0 or top_salary == None: predict_salary = lower_salary*1.2
-        elif lower_salary == 0 or lower_salary == None: predict_salary = top_salary*0.8
-        else: predict_salary = (lower_salary+top_salary)/2
-        return predict_salary, error
+        elif top_salary == 0 or top_salary == None: predicted_salary = lower_salary*1.2
+        elif lower_salary == 0 or lower_salary == None: predicted_salary = top_salary*0.8
+        else: predicted_salary = (lower_salary+top_salary)/2
+        return predicted_salary, error
 
 def predict_average_salary_in_table_form_all_pages(title, dict_input):
 
