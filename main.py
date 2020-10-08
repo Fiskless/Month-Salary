@@ -6,7 +6,7 @@ from terminaltables import AsciiTable
 
 
 
-def average_predict_rub_salary_per_page_hh(programming_language, page=0):
+def predict_average_rub_salary_per_page_hh(programming_language, page=0):
 
     url = f'https://api.hh.ru/vacancies'
     params = {
@@ -37,12 +37,12 @@ def average_predict_rub_salary_per_page_hh(programming_language, page=0):
     return (vacancy_numbers_per_page, average_salary_per_page, number_of_pages, vacancies_found)
 
 
-def average_predict_rub_salary(function_average_predict_rub_salary_per_page, programming_language):
+def predict_average_rub_salary_all_pages(input_function_name_of_predict_average_rub_salary_per_page, programming_language):
 
     vacancies_processed = 0
     sum_predict_rub_salary_all_pages = 0
     for page in count(0):
-        vacancy_numbers_per_page, average_salary_per_page, number_of_pages, vacancies_found = function_average_predict_rub_salary_per_page(programming_language, page)
+        vacancy_numbers_per_page, average_salary_per_page, number_of_pages, vacancies_found = input_function_name_of_predict_average_rub_salary_per_page(programming_language, page)
         sum_predict_rub_salary_all_pages = sum_predict_rub_salary_all_pages + average_salary_per_page
         vacancies_processed = vacancies_processed + vacancy_numbers_per_page
         if page >= (number_of_pages-1):
@@ -51,7 +51,7 @@ def average_predict_rub_salary(function_average_predict_rub_salary_per_page, pro
     return vacancies_found, vacancies_processed, average_salary_all_pages
 
 
-def average_predict_rub_salary_per_page_sj(programming_language, page = 0 ):
+def predict_average_rub_salary_per_page_sj(programming_language, page = 0 ):
 
     url = 'https://api.superjob.ru/2.33/vacancies/'
     headers = {'X-Api-App-Id': f'{super_job_secret_key}'}
@@ -91,7 +91,7 @@ def calculate_predict_salary(currency, lower_salary, top_salary, valid_currency,
         else: predict_salary = (lower_salary+top_salary)/2
         return predict_salary, error
 
-def predict_average_salary_in_table_form(title, dict_input):
+def predict_average_salary_in_table_form_all_pages(title, dict_input):
 
     title = title
     programming_language = list(dict_input.keys())
@@ -119,14 +119,14 @@ if __name__ == '__main__':
 
 
     try:
-          javascript_1, javascript_2, javascript_3 = average_predict_rub_salary(average_predict_rub_salary_per_page_hh, 'Javascript')
-          java_1, java_2, java_3 = average_predict_rub_salary(average_predict_rub_salary_per_page_hh, 'Javascript')
-          python_1, python_2, python_3 = average_predict_rub_salary(average_predict_rub_salary_per_page_hh, 'Python')
-          ruby_1, ruby_2, ruby_3 = average_predict_rub_salary(average_predict_rub_salary_per_page_hh, 'Ruby')
-          php_1, php_2,php_3 = average_predict_rub_salary(average_predict_rub_salary_per_page_hh, 'PHP')
-          scala_1, scala_2, scala_3 = average_predict_rub_salary(average_predict_rub_salary_per_page_hh, 'Scala')
-          c_1, c_2, c_3 = average_predict_rub_salary(average_predict_rub_salary_per_page_hh, 'C')
-          shell_1, shell_2, shell_3 = average_predict_rub_salary(average_predict_rub_salary_per_page_hh, 'Shell')
+          javascript_1, javascript_2, javascript_3 = predict_average_rub_salary_all_pages(predict_average_rub_salary_per_page_hh, 'Javascript')
+          java_1, java_2, java_3 = predict_average_rub_salary_all_pages(predict_average_rub_salary_per_page_hh, 'Javascript')
+          python_1, python_2, python_3 = predict_average_rub_salary_all_pages(predict_average_rub_salary_per_page_hh, 'Python')
+          ruby_1, ruby_2, ruby_3 = predict_average_rub_salary_all_pages(predict_average_rub_salary_per_page_hh, 'Ruby')
+          php_1, php_2,php_3 = predict_average_rub_salary_all_pages(predict_average_rub_salary_per_page_hh, 'PHP')
+          scala_1, scala_2, scala_3 = predict_average_rub_salary_all_pages(predict_average_rub_salary_per_page_hh, 'Scala')
+          c_1, c_2, c_3 = predict_average_rub_salary_all_pages(predict_average_rub_salary_per_page_hh, 'C')
+          shell_1, shell_2, shell_3 = predict_average_rub_salary_all_pages(predict_average_rub_salary_per_page_hh, 'Shell')
 
           average_salary_of_vacancies_all_pages_hh = {
             'Javascript':{'vacancies_found':javascript_1, "vacancies_processed": javascript_2, "average_salary":javascript_3},
@@ -138,14 +138,14 @@ if __name__ == '__main__':
             'C':{'vacancies_found':c_1, "vacancies_processed": c_2, "average_salary":c_3},
             'Shell':{'vacancies_found':shell_1, "vacancies_processed": shell_2, "average_salary":shell_3}
             }
-          javascript_1, javascript_2, javascript_3 = average_predict_rub_salary(average_predict_rub_salary_per_page_sj, 'Javascript')
-          java_1, java_2, java_3 = average_predict_rub_salary(average_predict_rub_salary_per_page_sj, 'Javascript')
-          python_1, python_2, python_3 = average_predict_rub_salary(average_predict_rub_salary_per_page_sj, 'Python')
-          ruby_1, ruby_2, ruby_3 = average_predict_rub_salary(average_predict_rub_salary_per_page_sj, 'Ruby')
-          php_1, php_2,php_3 = average_predict_rub_salary(average_predict_rub_salary_per_page_sj, 'PHP')
-          scala_1, scala_2, scala_3 = average_predict_rub_salary(average_predict_rub_salary_per_page_sj, 'Scala')
-          c_1, c_2, c_3 = average_predict_rub_salary(average_predict_rub_salary_per_page_sj, 'C')
-          shell_1, shell_2, shell_3 = average_predict_rub_salary(average_predict_rub_salary_per_page_sj, 'Shell')
+          javascript_1, javascript_2, javascript_3 = predict_average_rub_salary_all_pages(predict_average_rub_salary_per_page_sj, 'Javascript')
+          java_1, java_2, java_3 = predict_average_rub_salary_all_pages(predict_average_rub_salary_per_page_sj, 'Javascript')
+          python_1, python_2, python_3 = predict_average_rub_salary_all_pages(predict_average_rub_salary_per_page_sj, 'Python')
+          ruby_1, ruby_2, ruby_3 = predict_average_rub_salary_all_pages(predict_average_rub_salary_per_page_sj, 'Ruby')
+          php_1, php_2,php_3 = predict_average_rub_salary_all_pages(predict_average_rub_salary_per_page_sj, 'PHP')
+          scala_1, scala_2, scala_3 = predict_average_rub_salary_all_pages(predict_average_rub_salary_per_page_sj, 'Scala')
+          c_1, c_2, c_3 = predict_average_rub_salary_all_pages(predict_average_rub_salary_per_page_sj, 'C')
+          shell_1, shell_2, shell_3 = predict_average_rub_salary_all_pages(predict_average_rub_salary_per_page_sj, 'Shell')
 
           average_salary_of_vacancies_all_pages_sj = {
           'Javascript':{'vacancies_found':javascript_1, "vacancies_processed": javascript_2, "average_salary":javascript_3},
@@ -158,11 +158,12 @@ if __name__ == '__main__':
           'Shell':{'vacancies_found':shell_1, "vacancies_processed": shell_2, "average_salary":shell_3}
           }
 
-          predict_average_salary_in_table_form('SuperJob Moscow', average_salary_of_vacancies_all_pages_sj)
-          predict_average_salary_in_table_form('HeadHunter Moscow', average_salary_of_vacancies_all_pages_hh)
+          predict_average_salary_in_table_form_all_pages('SuperJob Moscow', average_salary_of_vacancies_all_pages_sj)
+          predict_average_salary_in_table_form_all_pages('HeadHunter Moscow', average_salary_of_vacancies_all_pages_hh)
 
     except requests.exceptions.HTTPError as error:
           exit("Can't get data from server:\n{0}".format(error))
+
 
 
 
