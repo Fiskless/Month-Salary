@@ -18,7 +18,7 @@ def predict_average_rub_salary_per_page_hh(programming_language, page=0):
     response = requests.get(url, params=params)
     response.raise_for_status()
     sum_salary, error, predict_salary, vacancy_index = 0,0,0,0
-    for vacancy_index, vacancy_json in enumerate(response.json()['items']):
+    for vacancy_index, vacancy_information in enumerate(response.json()['items']):
         try:
             lower_salary = response.json()['items'][vacancy_index]['salary']['from']
             top_salary = response.json()['items'][vacancy_index]['salary']['to']
@@ -63,9 +63,8 @@ def predict_average_rub_salary_per_page_sj(programming_language, page = 0 ):
     }
     response = requests.get(url, params=params, headers=headers)
     response.raise_for_status()
-    response.json()
     sum_salary, error, predict_salary, vacancy_index= 0,0,0,0
-    for vacancy_index, vacancy_json in enumerate(response.json()['objects']):
+    for vacancy_index, vacancy_information in enumerate(response.json()['objects']):
         lower_salary = response.json()['objects'][vacancy_index]['payment_from']
         top_salary = response.json()['objects'][vacancy_index]['payment_to']
         currency = response.json()['objects'][vacancy_index]['currency']
