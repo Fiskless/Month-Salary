@@ -29,6 +29,7 @@ The result of this project is shown below:
 
 `````
 $python main.py
+
 +SuperJob Moscow-------+-----------------+---------------------+----------------+
 | Programming language | Vacancies found | Vacancies processed | Average salary |
 +----------------------+-----------------+---------------------+----------------+
