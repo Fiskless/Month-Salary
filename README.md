@@ -23,8 +23,6 @@ Access options
 ID	9999
 Secret key	'Your secret key for API SuperJob'
 
-[TODO: tell people what should be done]
-
 ````
 
 The result of this project is shown below:
