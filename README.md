@@ -1,29 +1,27 @@
 # Programming vacancies compare
 
-This project allow us to get data from from job search sites such as HeadHunter and Superjob by using it API (API HeadHunter (https://dev.hh.ru/), API SuperJob(https://api.superjob.ru/). Through this project we can compare the vacancies which we interested in. As a result we get two tables where number of vacancies found, and average salary through the vacancies which are in column "Vacancies processed", are presented for multiple programming languages.
-
+This project allow us to get data from from job search sites such as HeadHunter and Superjob by using it API (API HeadHunter - https://dev.hh.ru/, API SuperJob - https://api.superjob.ru/. Through this project we can compare the vacancies which we are interested in. As a result we get two tables which have 3 columns: "Vacancies found" where number of vacancies found is presented, average salary in column "Average salary" calculated for vacancies which are in column "Vacancies processed". These data presented for multiple programming languages which are shown in column "Programming language"
 
 ### How to install
 
 For API HeadHunter you don't need secret key.
-For API SuperJob you need one. In order to get it you should register application. You can use any data, nobody will check it. After registrate your appliction data will be as shown below. We are interested in "Secret key" in chapter "Access options". The example of "Secret key" is in file example.end in directory of this project. 
+
+For API SuperJob you need one. In order to get it you should register application by following this link: https://api.superjob.ru/register/. You can use any data, nobody will check it. After registrate your appliction data will be as shown below. We are interested in "Secret key" in chapter "Access options". The example of "Secret key" is in file example.env in directory of this project. 
  ````
 Application options
 
 Application Name	JobJob
 App Description	123qwe
-Application site	https://www.anysute.com
+Application site	https://www.anysite.com
 Callback URL	
 The contact person	JobMaster
 Email the address	example@mail.ru
-Website	https://www.anysute.com
+Website	https://www.anysite.com
 
 Access options
 
 ID	9999
-Secret key	'Your secret key'
-
-[TODO: tell people what should be done]
+Secret key	'Your secret key for API SuperJob'
 
 ````
 
@@ -31,6 +29,7 @@ The result of this project is shown below:
 
 `````
 $python main.py
+
 +SuperJob Moscow-------+-----------------+---------------------+----------------+
 | Programming language | Vacancies found | Vacancies processed | Average salary |
 +----------------------+-----------------+---------------------+----------------+
