@@ -17,18 +17,19 @@ def predict_average_rub_salary_per_page_hh(programming_language, page=0):
     }
     response = requests.get(url, params=params)
     response.raise_for_status()
-    sum_salary, error, predict_salary, vacancy_index = 0,0,0,0
-    for vacancy_index, vacancy_information in enumerate(response.json()['items']):
+    sum_salary, error, predict_salary, vacancy_number = 0,0,0,0
+    vacancies = response.json()['items']
+    for vacancy_number, vacancy in enumerate(vacancies):
         try:
-            lower_salary = response.json()['items'][vacancy_index]['salary']['from']
-            top_salary = response.json()['items'][vacancy_index]['salary']['to']
-            currency = response.json()['items'][vacancy_index]['salary']['currency']
+            lower_salary = vacancies[vacancy_number]['salary']['from']
+            top_salary = vacancies[vacancy_number]['salary']['to']
+            currency = vacancies[vacancy_number]['salary']['currency']
             predict_salary, error = calculate_predict_salary(currency, lower_salary, top_salary,'RUR', error)
             sum_salary = sum_salary + predict_salary
         except TypeError:
             error = error + 1
     number_of_pages = response.json()['pages']
-    vacancy_numbers_per_page = vacancy_index + 1 - error
+    vacancy_numbers_per_page = vacancy_number + 1 - error
     vacancies_found = response.json()['found']
     if vacancy_numbers_per_page == 0:
         average_salary_per_page = 0
@@ -63,15 +64,16 @@ def predict_average_rub_salary_per_page_sj(programming_language, page = 0 ):
     }
     response = requests.get(url, params=params, headers=headers)
     response.raise_for_status()
-    sum_salary, error, predict_salary, vacancy_index= 0,0,0,0
-    for vacancy_index, vacancy_information in enumerate(response.json()['objects']):
-        lower_salary = response.json()['objects'][vacancy_index]['payment_from']
-        top_salary = response.json()['objects'][vacancy_index]['payment_to']
-        currency = response.json()['objects'][vacancy_index]['currency']
+    sum_salary, error, predict_salary, vacancy_number= 0,0,0,0
+    vacancies = response.json()['objects']
+    for vacancy_number, vacancy in enumerate(vacancies):
+        lower_salary = vacancies[vacancy_number]['payment_from']
+        top_salary = vacancies[vacancy_number]['payment_to']
+        currency = vacancies[vacancy_number]['currency']
         predict_salary, error = calculate_predict_salary(currency, lower_salary, top_salary, 'rub', error)
         sum_salary = sum_salary + predict_salary
     number_of_pages = (response.json()['total']//20+1)
-    vacancy_numbers_per_page = vacancy_index + 1 - error
+    vacancy_numbers_per_page = vacancy_number + 1 - error
     vacancies_found = response.json()['total']
     if vacancy_numbers_per_page == 0:
         average_salary_per_page = 0
