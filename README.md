@@ -42,4 +42,4 @@ The result of code execution is shown below:
 +----------------------+-----------------+---------------------+----------------+
 `````
 ### Project Goals
-The code is written for educational purposes on online-course for web-developers dvmn.org[dvmn.org](https://dvmn.org/).
+The code is written for educational purposes on online-course for web-developers [dvmn.org](https://dvmn.org/).
