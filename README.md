@@ -11,21 +11,6 @@ For API SuperJob you need one. In order to get it you should register applicatio
 Application options
  ````
 ![Image alt](https://github.com/Fiskless/Month-Salary/blob/master/SuperJobAPI.png)
-````
-Application Name	JobJob
-App Description	123qwe
-Application site	https://www.anysite.com
-Callback URL	
-The contact person	JobMaster
-Email the address	example@mail.ru
-Website	https://www.anysite.com
-
-Access options
-
-ID	9999
-Secret key	'Your secret key for API SuperJob'
-````
-
 
 The result of this project is shown below:
 
