@@ -10,7 +10,7 @@ For API SuperJob you need one. In order to get it you should register applicatio
  ````
 Application options
  ````
-![Image alt][https://github.com/Fiskless/Month-Salary/blob/master/SuperJobAPI.png
+![Image alt](https://github.com/Fiskless/Month-Salary/blob/master/SuperJobAPI.png)
 ````
 Application Name	JobJob
 App Description	123qwe
