@@ -9,7 +9,9 @@ For API HeadHunter you don't need secret key.
 For API SuperJob you need one. In order to get it you should register application by following this link: https://api.superjob.ru/register/. You can use any data, nobody will check it. After registrate your appliction data will be as shown below. We are interested in "Secret key" in chapter "Access options". The example of "Secret key" is in file example.env in directory of this project. 
  ````
 Application options
-
+ ````
+![Image alt][https://github.com/Fiskless/Month-Salary/blob/master/SuperJobAPI.png
+````
 Application Name	JobJob
 App Description	123qwe
 Application site	https://www.anysite.com
@@ -22,8 +24,8 @@ Access options
 
 ID	9999
 Secret key	'Your secret key for API SuperJob'
-
 ````
+
 
 The result of this project is shown below:
 
