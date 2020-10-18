@@ -25,7 +25,7 @@ def predict_average_rub_salary_hh(programming_language, secret_key):
                 lower_salary = vacancies[vacancy_number]['salary']['from']
                 top_salary = vacancies[vacancy_number]['salary']['to']
                 currency = vacancies[vacancy_number]['salary']['currency']
-                predicted_salary = calculate_predicted_salary(
+                predicted_salary = predict_salary(
                     currency,
                     lower_salary,
                     top_salary,
@@ -67,7 +67,7 @@ def predict_average_rub_salary_sj(programming_language, secret_key):
             lower_salary = vacancies[vacancy_number]['payment_from']
             top_salary = vacancies[vacancy_number]['payment_to']
             currency = vacancies[vacancy_number]['currency']
-            predicted_salary = calculate_predicted_salary(
+            predicted_salary = predict_salary(
                 currency,
                 lower_salary,
                 top_salary,
@@ -87,18 +87,19 @@ def predict_average_rub_salary_sj(programming_language, secret_key):
     return vacancies_found, vacancies_processed, average_salary
 
 
-def calculate_predicted_salary(
+def predict_salary(
         currency, lower_salary, top_salary, valid_currency):
 
     predicted_salary = 0
-    if currency != valid_currency or (top_salary == 0 and lower_salary == 0):
-        pass
-    elif not top_salary:
+    if currency != valid_currency:
+        predicted_salary = 0
+    elif top_salary and lower_salary:
+        predicted_salary = (lower_salary + top_salary) / 2
+    elif lower_salary:
         predicted_salary = lower_salary*1.2
-    elif not lower_salary:
+    elif top_salary:
         predicted_salary = top_salary*0.8
-    else:
-        predicted_salary = (lower_salary+top_salary)/2
+
     return predicted_salary
 
 
