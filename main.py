@@ -93,7 +93,8 @@ def predict_salary(
     predicted_salary = 0
     if currency != valid_currency:
         predicted_salary = 0
-    elif top_salary and lower_salary:
+
+    if top_salary and lower_salary:
         predicted_salary = (lower_salary + top_salary) / 2
     elif lower_salary:
         predicted_salary = lower_salary*1.2
